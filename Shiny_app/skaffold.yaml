@@ -1,0 +1,14 @@
+apiVersion: skaffold/v2beta10
+kind: Config
+metadata:
+  name: shiny-app
+build:
+  artifacts:
+  - image: shiny-example-image
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - shiny-pod.yaml
+    - shiny-svc.yaml

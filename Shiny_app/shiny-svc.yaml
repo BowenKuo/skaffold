@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny-example-service
+spec:
+  selector:
+    app: shiny-example
+  ports:
+    - protocol: TCP
+      port: 3838
+  type: LoadBalancer

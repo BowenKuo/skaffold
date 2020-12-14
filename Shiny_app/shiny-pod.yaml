@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shiny-example-pod
+  labels:
+    app: shiny-example
+spec:
+  containers:
+  - name: shiny-example
+    image: shiny-example-image
+    ports:
+    - containerPort: 3838
