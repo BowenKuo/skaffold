@@ -10,5 +10,5 @@ build:
 deploy:
   kubectl:
     manifests:
-    - shiny-pod.yaml
-    - shiny-svc.yaml
+    - k8s/shiny-pod.yaml
+    - k8s/shiny-svc.yaml
