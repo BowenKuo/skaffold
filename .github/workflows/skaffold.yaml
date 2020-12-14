@@ -1,0 +1,36 @@
+# Ref: https://github.com/marketplace/actions/skaffold-build-action
+name: Skaffold-Builder
+
+on:
+  push:
+    paths:
+      - k8s/**
+      - skaffold.yaml
+      - Dockerfile
+jobs:
+  pipiline:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Setup Minikube
+        uses: hiberbee/github-action-minikube@latest
+
+      - name: Setup Helm
+        uses: hiberbee/github-action-helm@latest
+
+      - name: Authenticate with Docker registry
+        run: echo $DOCKER_PASSWORD | docker login harbor.k8s.hiberbee.net -u $DOCKER_USERNAME --password-stdin
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Run Skaffold pipeline
+        uses: hiberbee/github-action-skaffold@latest
+        with:
+          command: run
+          default-repo: harbor.k8s.hiberbee.net/library
+
+      - name: Get Helm releases
+        run: helm list
