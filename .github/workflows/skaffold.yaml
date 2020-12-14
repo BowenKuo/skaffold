@@ -3,10 +3,9 @@ name: Skaffold-Builder
 
 on:
   push:
-    paths:
-      - k8s/**
-      - skaffold.yaml
-      - Dockerfile
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 jobs:
   pipiline:
     runs-on: ubuntu-20.04
