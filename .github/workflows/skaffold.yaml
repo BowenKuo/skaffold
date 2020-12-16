@@ -30,7 +30,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Run Skaffold pipeline
-        uses: hiberbee/github-action-skaffold@latest
+        uses: bowenkuo/github-action-skaffold@latest
         with:
           command: run
           filename: Examples/Shiny_app/skaffold.yaml
