@@ -1,32 +1,33 @@
-name: Minikube workflow
-on: push
+on:
+  push:
+    paths:
+      - src/**
+      - skaffold.yaml
+      - Dockerfile
 jobs:
-  minikube:
-  name: Start Kubernetes cluster
-runs-on: ubuntu-20.04
-steps:
-  - name: Start Minikube
-id: minikube
-uses: hiberbee/github-action-minikube@latest
-with:
-  profile: github
+  pipiline:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
 
-- name: Get Minikube status
-run: minikube status
+      - name: Setup Minikube
+        uses: hiberbee/github-action-minikube@latest
 
-- name: Get cluster info
-run: kubectl cluster-info
+      - name: Setup Helm
+        uses: hiberbee/github-action-helm@latest
 
-- name: Get Kubernetes pods
-run: kubectl get services --all-namespaces
+      - name: Authenticate with Docker registry
+        run: echo $DOCKER_PASSWORD | docker login harbor.k8s.hiberbee.net -u $DOCKER_USERNAME --password-stdin
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-- name: Get Minikube IP
-run: echo ${{ steps.minikube.outputs.ip }}
+      - name: Run Skaffold pipeline
+        uses: hiberbee/github-action-skaffold@latest
+        with:
+          command: run
+          default-repo: harbor.k8s.hiberbee.net/library
 
-- name: Get Docker containers
-run: docker ps
-
-- name: Get Helm releases
-uses: hiberbee/github-action-helm@latest
-with:
-  helm-command: list
+      - name: Get Helm releases
+        run: helm list
